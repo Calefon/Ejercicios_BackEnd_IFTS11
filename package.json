@@ -1,7 +1,7 @@
 {
   "name": "practica_node_2025_1c",
   "version": "1.0.0",
-  "description": "En este iremos subiendo las practicas con node",
+  "description": "",
   "main": "serverExpress.js",
   "scripts": {
     "nodemonStart": "npx nodemon ./serverExpress.js",
@@ -10,18 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GZifts11/Practica_Node_2025_1C.git"
+    "url": "git+https://github.com/Calefon/Ejercicios_BackEnd_IFTS11.git"
   },
   "keywords": [
     "IFTS11",
     "Server"
   ],
-  "author": "Gustavo Z.",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/GZifts11/Practica_Node_2025_1C/issues"
-  },
-  "homepage": "https://github.com/GZifts11/Practica_Node_2025_1C#readme",
   "devDependencies": {
     "nodemon": "^3.1.9"
   },

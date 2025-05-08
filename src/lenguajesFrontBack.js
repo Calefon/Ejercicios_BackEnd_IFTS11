@@ -93,7 +93,26 @@ let infoLenguajes = {
             comision: "A",
             cantidadAlumnos: 30
         }
-    ]
+    ],
+    filtrarBackPorKey: function (key, filtro) {
+                                                return this.backend.filter( 
+                                                    (valor) => {
+                                                        if (typeof valor[key] === "string"){
+                                                            return valor[key].toLocaleLowerCase() === filtro.toLocaleLowerCase();
+                                                        }else{
+                                                            return valor[key] === filtro;
+                                                        }
+                                                    })
+    },
+    filtrarFrontPorKey: function (key, filtro){ 
+                                                return this.frontend.filter( (valor) => {
+                                                        if (typeof valor[key] === "string"){
+                                                            return valor[key].toLocaleLowerCase() === filtro.toLocaleLowerCase();
+                                                        }else{
+                                                            return valor[key] === filtro;
+                                                    }
+                                                });
+    }
 }
 
 module.exports.infoLenguajes = infoLenguajes;

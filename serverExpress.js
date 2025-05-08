@@ -92,12 +92,26 @@ app.get('/api/lenguajes/backend', (req, res) => {
     res.send(JSON.stringify(infoLenguajes.backend))
 })
 
+app.listen(PORT, HOSTNAME, () => {
+    console.log(`El servidor Express está corriendo en http://${HOSTNAME}:${PORT}/`);
+});
+
+app.get('/api/lenguajes/backend/', (req, res) => {
+    res.setHeader('Content-Type', 'application/json')
+    res.status(200)
+    res.send(JSON.stringify(infoLenguajes.backend))
+})
+
+app.get('/api/lenguajes/backend/:lenguaje', (req, res) => {
+    const lenguaje = req.params.lenguaje;
+
+    res.setHeader('Content-Type', 'application/json')
+    res.status(200)
+    res.send(JSON.stringify(infoLenguajes.filtrarBackPorKey("nombre",lenguaje)))
+})
+
 app.get('/{*any}', (req, res) => {
     res.setHeader('Content-Type', 'text/plain')
     res.status(404)
     res.send("la ruta a la que quiere ingresar, no existe")
 })
-
-app.listen(PORT, HOSTNAME, () => {
-    console.log(`El servidor Express está corriendo en http://${HOSTNAME}:${PORT}/`);
-});
