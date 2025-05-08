@@ -94,24 +94,40 @@ let infoLenguajes = {
             cantidadAlumnos: 30
         }
     ],
+    _filtrarPorKeyArray: function (key, filtro, selector){
+        if (filtro.length > 1){
+            return this._filtrarPorKeyArray(key.slice(1), filtro.slice(1),selector).filter(
+                (valor) => {
+                    if (typeof valor[key[0]] === "string"){
+                        return valor[key[0]].toLocaleLowerCase() === filtro[0].toLocaleLowerCase();
+                    }else{
+                        return valor[key[0]] === filtro[0];
+                    }
+                }
+            )
+        }
+        return this[selector].filter( 
+            (valor) => {
+                if (typeof valor[key[0]] === "string"){
+                    return valor[key[0]].toLocaleLowerCase() === filtro[0].toLocaleLowerCase();
+                }else{
+                    return valor[key[0]] === filtro[0];
+                }
+        })
+    }
+    ,
     filtrarBackPorKey: function (key, filtro) {
-                                                return this.backend.filter( 
-                                                    (valor) => {
-                                                        if (typeof valor[key] === "string"){
-                                                            return valor[key].toLocaleLowerCase() === filtro.toLocaleLowerCase();
-                                                        }else{
-                                                            return valor[key] === filtro;
-                                                        }
-                                                    })
+        if(!Array.isArray(filtro)){
+            return this._filtrarPorKeyArray([key],[filtro], "backend");
+        }
+
+        return this._filtrarPorKeyArray(key, filtro, "backend");                                      
     },
-    filtrarFrontPorKey: function (key, filtro){ 
-                                                return this.frontend.filter( (valor) => {
-                                                        if (typeof valor[key] === "string"){
-                                                            return valor[key].toLocaleLowerCase() === filtro.toLocaleLowerCase();
-                                                        }else{
-                                                            return valor[key] === filtro;
-                                                    }
-                                                });
+    filtrarFrontPorKey: function (key, filtro){
+        if(!Array.isArray(filtro)){
+            return this._filtrarPorKeyArray([key],[filtro], "frontend");
+        }
+        return this._filtrarPorKeyArray(key, filtro, "frontend");
     }
 }
 

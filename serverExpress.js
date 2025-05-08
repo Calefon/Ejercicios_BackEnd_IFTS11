@@ -86,28 +86,41 @@ app.get('/api/lenguajes/frontend/:urlParam/:otroUrlParam', (req, res) => {
     res.send(`${urlParam} ${otroUrlParam}`)
 })
 
-app.get('/api/lenguajes/backend', (req, res) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.status(200)
-    res.send(JSON.stringify(infoLenguajes.backend))
-})
-
-app.listen(PORT, HOSTNAME, () => {
-    console.log(`El servidor Express está corriendo en http://${HOSTNAME}:${PORT}/`);
-});
-
 app.get('/api/lenguajes/backend/', (req, res) => {
+    const {lenguaje, turno} = req.query;
+
+    let filtrosObj = {
+        nombre: lenguaje,
+        turno: turno
+    }
+    let arrayEntries = Object.entries(filtrosObj);
+    console.log(arrayEntries)
+    let arrayKeys = arrayEntries.map(
+        (v) => {
+            if(v[1] !== undefined){
+                return v[0]
+            }else{
+                return "-"
+            }
+        }
+    ).filter((v)=>v!=="-");
+
+    let arrayFiltros = arrayEntries.map(
+        (v) => {
+            if(v[1] !== undefined){
+                return v[1]
+            }else{
+                return "-"
+            }
+        }
+    ).filter((v)=>v!=="-");
+
+    console.log(arrayFiltros);
+    console.log(arrayKeys)
+
     res.setHeader('Content-Type', 'application/json')
     res.status(200)
-    res.send(JSON.stringify(infoLenguajes.backend))
-})
-
-app.get('/api/lenguajes/backend/:lenguaje', (req, res) => {
-    const lenguaje = req.params.lenguaje;
-
-    res.setHeader('Content-Type', 'application/json')
-    res.status(200)
-    res.send(JSON.stringify(infoLenguajes.filtrarBackPorKey("nombre",lenguaje)))
+    res.send(JSON.stringify(infoLenguajes.filtrarBackPorKey(arrayKeys,arrayFiltros)))
 })
 
 app.get('/{*any}', (req, res) => {
@@ -115,3 +128,8 @@ app.get('/{*any}', (req, res) => {
     res.status(404)
     res.send("la ruta a la que quiere ingresar, no existe")
 })
+
+app.listen(PORT, HOSTNAME, () => {
+    console.log(`El servidor Express está corriendo en http://${HOSTNAME}:${PORT}/`);
+});
+
