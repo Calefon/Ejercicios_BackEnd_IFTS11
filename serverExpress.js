@@ -22,24 +22,6 @@ app.get('/api', (req, res) => {
     res.send('<h1>Hola Mundo! Bienvenido al server con express desde /api!</h1>')
 })
 
-app.get('/api/lenguajes', (req, res) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.status(200)
-    res.send(JSON.stringify(infoLenguajes))
-})
-
-app.get('/api/lenguajes/frontend', (req, res) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.status(200)
-    res.send(JSON.stringify(infoLenguajes.frontend))
-})
-
-app.get('/api/lenguajes/frontend', (req, res) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.status(200)
-    res.send(JSON.stringify(infoLenguajes.frontend))
-})
-
 app.get('/api/lenguajes/frontend/:lenguaje/', (req, res) => {
     const lenguaje = req.params.lenguaje;
     const paramOrdenar = req.query.ordenar;
@@ -86,41 +68,55 @@ app.get('/api/lenguajes/frontend/:urlParam/:otroUrlParam', (req, res) => {
     res.send(`${urlParam} ${otroUrlParam}`)
 })
 
-app.get('/api/lenguajes/backend/', (req, res) => {
-    const {lenguaje, turno} = req.query;
+app.get('/api/lenguajes/backend', (req, res) => {
+    const {lenguaje, turno, cantidadAlumnos} = req.query;
 
     let filtrosObj = {
         nombre: lenguaje,
-        turno: turno
+        turno: turno,
+        cantidadAlumnos: cantidadAlumnos
     }
-    let arrayEntries = Object.entries(filtrosObj);
-    console.log(arrayEntries)
-    let arrayKeys = arrayEntries.map(
-        (v) => {
-            if(v[1] !== undefined){
-                return v[0]
-            }else{
-                return "-"
-            }
-        }
-    ).filter((v)=>v!=="-");
-
-    let arrayFiltros = arrayEntries.map(
-        (v) => {
-            if(v[1] !== undefined){
-                return v[1]
-            }else{
-                return "-"
-            }
-        }
-    ).filter((v)=>v!=="-");
-
-    console.log(arrayFiltros);
-    console.log(arrayKeys)
+    
 
     res.setHeader('Content-Type', 'application/json')
     res.status(200)
-    res.send(JSON.stringify(infoLenguajes.filtrarBackPorKey(arrayKeys,arrayFiltros)))
+    res.send(JSON.stringify(infoLenguajes.filtrarBackPorKey(filtrosObj)))
+})
+
+
+app.get('/api/lenguajes/frontend', (req, res) => {
+    const {lenguaje, turno, cantidadAlumnos} = req.query;
+
+    let filtrosObj = {
+        nombre: lenguaje,
+        turno: turno,
+        cantidadAlumnos: cantidadAlumnos
+    }
+
+    res.setHeader('Content-Type', 'application/json')
+    res.status(200)
+    res.send(JSON.stringify(infoLenguajes.filtrarFrontPorKey(filtrosObj)))
+})
+
+app.get('/api/lenguajes', (req, res) => {
+    const {lenguaje, turno, cantidadAlumnos} = req.query;
+
+    let filtrosObj = {
+        nombre: lenguaje,
+        turno: turno,
+        cantidadAlumnos: cantidadAlumnos
+    }
+    let filtradoBack = infoLenguajes.filtrarBackPorKey(filtrosObj);
+    let filtradoFront = infoLenguajes.filtrarFrontPorKey(filtrosObj);
+
+    let filtradosObj = {
+        backend: filtradoBack,
+        frontend: filtradoFront
+    }
+
+    res.setHeader('Content-Type', 'application/json')
+    res.status(200)
+    res.send(JSON.stringify(filtradosObj))
 })
 
 app.get('/{*any}', (req, res) => {

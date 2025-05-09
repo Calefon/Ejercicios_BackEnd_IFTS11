@@ -94,40 +94,55 @@ let infoLenguajes = {
             cantidadAlumnos: 30
         }
     ],
-    _filtrarPorKeyArray: function (key, filtro, selector){
-        if (filtro.length > 1){
-            return this._filtrarPorKeyArray(key.slice(1), filtro.slice(1),selector).filter(
-                (valor) => {
-                    if (typeof valor[key[0]] === "string"){
-                        return valor[key[0]].toLocaleLowerCase() === filtro[0].toLocaleLowerCase();
-                    }else{
-                        return valor[key[0]] === filtro[0];
-                    }
-                }
-            )
+    _armarKeyFiltroArr: function (filtrosObj) {
+        console.log(filtrosObj)
+        if(filtrosObj == {})   
+            return [[],[]]
+        let arr = Object.entries(filtrosObj);
+        let arrK = []; let arrF = []
+        for ([k,v] of arr) {
+            if(v !== undefined){
+                arrK.push(k);
+                arrF.push(v);
+            }
         }
-        return this[selector].filter( 
-            (valor) => {
-                if (typeof valor[key[0]] === "string"){
-                    return valor[key[0]].toLocaleLowerCase() === filtro[0].toLocaleLowerCase();
-                }else{
-                    return valor[key[0]] === filtro[0];
-                }
-        })
+        return [arrK,arrF]
     }
     ,
-    filtrarBackPorKey: function (key, filtro) {
-        if(!Array.isArray(filtro)){
-            return this._filtrarPorKeyArray([key],[filtro], "backend");
+    _filtroRecursion: function(keyArr, filtroArr, selector){
+        if (filtroArr.length > 1){
+            return this._filtroRecursion(keyArr.slice(1), filtroArr.slice(1),selector).filter(
+                (v)=>this._callbackFilter(v,keyArr[0],filtroArr[0])
+            )
         }
-
-        return this._filtrarPorKeyArray(key, filtro, "backend");                                      
+        
+        return this[selector].filter( (v)=>this._callbackFilter(v,keyArr[0],filtroArr[0]) );
+    }
+    ,
+    _filtrarPorKeyArray: function (filtrosObj, selector){
+        let [keyArr, filtroArr] = this._armarKeyFiltroArr(filtrosObj);
+        if(keyArr.length == 0 && filtroArr.length == 0)
+            return this[selector];
+        
+        return this._filtroRecursion(keyArr,filtroArr,selector);  
+    }
+    ,
+    _callbackFilter: (valor,key,filtro) => {
+                switch (key){
+                    case "id":
+                        return valor[key] === filtro;
+                    case "cantidadAlumnos":
+                        return valor[key] >= filtro;
+                    default:
+                        return valor[key].toLocaleLowerCase() === filtro.toLocaleLowerCase();
+                }
+    }
+    ,
+    filtrarBackPorKey: function (filtrosObj) {
+        return this._filtrarPorKeyArray(filtrosObj, "backend");                                      
     },
-    filtrarFrontPorKey: function (key, filtro){
-        if(!Array.isArray(filtro)){
-            return this._filtrarPorKeyArray([key],[filtro], "frontend");
-        }
-        return this._filtrarPorKeyArray(key, filtro, "frontend");
+    filtrarFrontPorKey: function (filtrosObj) {
+        return this._filtrarPorKeyArray(filtrosObj, "frontend");                                      
     }
 }
 
